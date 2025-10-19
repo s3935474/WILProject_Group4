@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SARAG – Study Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <div class="logo">💬 SARAG <span>Study Assistant</span></div>
+        </div>
+
+        <div class="main">
+            {% if query %}
+                <div class="chat-box">
+                    <div class="message user-message">
+                        <p><strong>You asked:</strong></p>
+                        <div class="bubble user-bubble">{{ query }}</div>
+                    </div>
+
+                    <div class="message bot-message">
+                        <p><strong style="color: royalblue;">Response:</strong></p>
+                        <div class="bubble bot-bubble">{{ answer }}</div>
+                    </div>
+                </div>
+            {% else %}
+                <h1 class="placeholder">What are you studying today?</h1>
+            {% endif %}
+        </div>
+
+        <form method="POST" class="input-area">
+            <input type="text" name="query" placeholder="Ask a question..." required autocomplete="off">
+            <button type="submit" class="send-btn">
+                <img src="{{ url_for('static', filename='send-icon.png') }}" alt="Send">
+            </button>
+        </form>
+    </div>
+</body>
+</html>

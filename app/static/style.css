@@ -1,0 +1,213 @@
+/* Base Layout (Light) */
+body {
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  background: #f9f9f9;
+  color: #111;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #151515;
+    color: #eaeaea;
+  }
+}
+
+/* Main Container */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 750px;
+  height: 100vh;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}
+
+/* Top Bar */
+.top-bar {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #0078ff;
+}
+
+.logo span {
+  font-weight: 400;
+  color: #666;
+}
+
+/* Main Section  */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  text-align: center;
+}
+
+.placeholder {
+  font-size: 1.6rem;
+  color: #333;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+/* Chat Answer */
+.answer {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 600px;
+  text-align: left;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.answer h3 {
+  margin: 0 0 0.5rem 0;
+  color: #0078ff;
+}
+
+/* Text Area */
+.input-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 700px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 30px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+  padding: 0.5rem 0.8rem;
+  position: sticky;
+  bottom: 2rem;
+  transition: box-shadow 0.2s;
+}
+
+.input-area:hover {
+  box-shadow: 0 3px 20px rgba(0, 0, 0, 0.08);
+}
+
+.input-area input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background: transparent;
+  color: inherit;
+  padding: 0.7rem 1rem;
+}
+
+.send-btn {
+  background: #0078ff;
+  border: none;
+  border-radius: 50%;
+  padding: 0.5rem;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.3s ease;
+}
+
+.send-btn:hover {
+  background: #005fcc;
+}
+
+.send-btn img {
+  width: 18px;
+  height: 18px;
+  filter: brightness(0) invert(1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dark Mode Adjustments */
+@media (prefers-color-scheme: dark) {
+  .input-area {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.05);
+  }
+
+  .placeholder {
+    color: #bbb;
+  }
+
+  .answer {
+    background: #1e1e1e;
+    color: #eaeaea;
+  }
+}
+
+
+/* Chat container styling */
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Each message section */
+.message {
+  display: flex;
+  flex-direction: column;
+}
+
+/* User + bot bubble styles */
+.bubble {
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 16px;
+  line-height: 1.5;
+  margin-top: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* User bubble (grayish) */
+.user-bubble {
+  background: #f0f0f0;
+  align-self: flex-end;
+  color: #222;
+}
+
+/* Bot bubble (white with subtle blue border) */
+.bot-bubble {
+  background: #ffffff;
+  border: 1px solid #d0e0ff;
+  color: #333;
+}
+
+/* Subtle animation when messages appear */
+.bubble {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}

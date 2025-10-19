@@ -1,45 +1,52 @@
-from flask import Flask, request, render_template_string
+from flask import Flask, render_template, request
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.llms import Ollama
-from langchain.chains import RetrievalQA
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain.chains import create_retrieval_chain
+from langchain.prompts import ChatPromptTemplate
 
 app = Flask(__name__)
 
-# Load retriever and LLM
+# Load retriever and LLM 
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+
 retriever = FAISS.load_local(
     "retriever/faiss_index",
     embeddings,
     allow_dangerous_deserialization=True
 ).as_retriever()
+
 llm = Ollama(model="mistral")
-qa = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
 
-HTML = """
-<!DOCTYPE html>
-<html>
-<body style="font-family:sans-serif;">
-<h2>Study Assistant RAG (SARAG)</h2>
-<form method="POST">
-  <input name="query" style="width:400px;" placeholder="Ask a question">
-  <input type="submit" value="Ask">
-</form>
-{% if answer %}
-  <h3>Answer:</h3>
-  <p>{{ answer }}</p>
-{% endif %}
-</body>
-</html>
-"""
+prompt = ChatPromptTemplate.from_template("""
+You are a helpful study assistant. Use the following retrieved context to answer the question.
+If the answer is not in the provided context, say you don’t know.
 
+Context:
+{context}
+
+Question:
+{input}
+""")
+
+combine_docs_chain = create_stuff_documents_chain(llm, prompt)
+rag_chain = create_retrieval_chain(retriever, combine_docs_chain)
+
+
+# Flask route
 @app.route("/", methods=["GET", "POST"])
-def home():
-    answer = None
+def index():
     if request.method == "POST":
         query = request.form["query"]
-        answer = qa.run(query)
-    return render_template_string(HTML, answer=answer)
+        try:
+            response = rag_chain.invoke({"input": query})
+            answer = response.get("answer", "Sorry, I couldn’t find an answer.")
+        except Exception as e:
+            answer = f"Error: {str(e)}"
+        return render_template("chat.html", query=query, answer=answer)
+    return render_template("chat.html", query=None, answer=None)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
