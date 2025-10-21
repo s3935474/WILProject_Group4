@@ -1,0 +1,55 @@
+set,k,question,answer,pred,reason,rels
+out_of_kb,1,Who won the 2025 AFL Grand Final?,,"UNANSWERED (The context provides information about a past Heisman Trophy winner, not the 2025 AFL Grand Final winner.)",answered,
+out_of_kb,1,What is the official slogan of Apple’s 2024 iPad Pro campaign?,,UNANSWERED (The provided context does not contain information about Apple's 2024 iPad Pro campaign.),answered,
+out_of_kb,1,What’s the current exchange rate of AUD to TRY today?,,UNANSWERED (The provided context does not contain information about the exchange rates between Australian dollar and Turkish lira.),answered,
+out_of_kb,1,Who is the CEO of OpenAI right now?,,UNANSWERED (The context does not provide information about the CEO of OpenAI.),answered,
+out_of_kb,1,When will the next total solar eclipse visible from Melbourne occur?,,UNANSWERED (The provided context does not contain information about upcoming solar eclipses or visibility locations.),answered,
+out_of_kb,1,What is the latest macOS version released this month?,,UNANSWERED (The provided context does not contain information about any MacOS versions or software releases.),answered,
+out_of_kb,1,What were the medal tallies for the 2024 Paris Paralympics?,,UNANSWERED (The context does not contain information about the medal tallies for the 2024 Paris Paralympics.),answered,
+out_of_kb,1,What’s the ticket price for a Zone 1+2 daily pass in Melbourne today?,,UNANSWERED (The provided context does not contain information about ticket prices.),answered,
+out_of_kb,1,What is the GPU architecture name used in Nvidia’s Blackwell series?,,UNANSWERED (The provided context does not contain information about the GPU architecture used in Nvidia's Blackwell series.),answered,
+out_of_kb,1,Which movie won Best Picture at the 2025 Oscars?,,UNANSWERED (The provided context does not contain information about movie awards or any movies released after 2023.),answered,
+out_of_kb,3,Who won the 2025 AFL Grand Final?,,UNANSWERED,model,
+out_of_kb,3,What is the official slogan of Apple’s 2024 iPad Pro campaign?,,UNANSWERED (There's no information in the provided context about Apple's 2024 iPad Pro campaign.),answered,
+out_of_kb,3,What’s the current exchange rate of AUD to TRY today?,,UNANSWERED (The context does not contain information about Australian Dollar (AUD) to Turkish Lira (TRY) exchange rate.),answered,
+out_of_kb,3,Who is the CEO of OpenAI right now?,,UNANSWERED (There is no information in the provided context about the CEO of OpenAI.),answered,
+out_of_kb,3,When will the next total solar eclipse visible from Melbourne occur?,,UNANSWERED (The provided context does not contain information about the date of the next total solar eclipse visible from Melbourne.),answered,
+out_of_kb,3,What is the latest macOS version released this month?,,UNANSWERED,model,
+out_of_kb,3,What were the medal tallies for the 2024 Paris Paralympics?,,UNANSWERED (The provided context does not contain information about the medal tallies for the 2024 Paris Paralympics.),answered,
+out_of_kb,3,What’s the ticket price for a Zone 1+2 daily pass in Melbourne today?,,UNANSWERED,model,
+out_of_kb,3,What is the GPU architecture name used in Nvidia’s Blackwell series?,,UNANSWERED,model,
+out_of_kb,3,Which movie won Best Picture at the 2025 Oscars?,,UNANSWERED (The provided context does not contain information about which movie won Best Picture at the 2025 Oscars.),answered,
+out_of_kb,5,Who won the 2025 AFL Grand Final?,,UNANSWERED (The provided context does not contain information about future events or sports results.),answered,
+out_of_kb,5,What is the official slogan of Apple’s 2024 iPad Pro campaign?,,UNANSWERED (As the provided context does not contain any information about Apple's 2024 iPad Pro campaign.),answered,
+out_of_kb,5,What’s the current exchange rate of AUD to TRY today?,,UNANSWERED,model,
+out_of_kb,5,Who is the CEO of OpenAI right now?,,UNANSWERED (The provided context does not contain information about the CEO of OpenAI.),answered,
+out_of_kb,5,When will the next total solar eclipse visible from Melbourne occur?,,UNANSWERED (The context provided does not contain information about when the next total solar eclipse visible from Melbourne will occur.),answered,
+out_of_kb,5,What is the latest macOS version released this month?,,UNANSWERED (As the context does not provide any information about the latest MacOS release in the current month.),answered,
+out_of_kb,5,What were the medal tallies for the 2024 Paris Paralympics?,,UNANSWERED (The provided context does not contain information about the 2024 Paris Paralympics' medal tallies.),answered,
+out_of_kb,5,What’s the ticket price for a Zone 1+2 daily pass in Melbourne today?,,UNANSWERED (No information about this detail is provided in the given context.),answered,
+out_of_kb,5,What is the GPU architecture name used in Nvidia’s Blackwell series?,,UNANSWERED (There's no information about GPU architecture names used in Nvidia’s Blackwell series in the provided context.),answered,
+out_of_kb,5,Which movie won Best Picture at the 2025 Oscars?,,UNANSWERED (The context does not contain information about the year 2025.),answered,
+inferred,1,Which author wrote Pride and Prejudice and in which century did they live?,Jane Austen; 19th century,"UNANSWERED (Wilson, the author mentioned in the context, is not known for writing ""Pride and Prejudice"" and there's no information provided about when Wilson lived.)",,0
+inferred,1,Name the capital of France and the river that runs through it.,Paris; Seine,UNANSWERED (There is no information in the provided context about the capital of France or a river running through it.),,0
+inferred,1,Who developed the theory of general relativity and what is the equation for mass–energy equivalence?,Albert Einstein; E = mc^2,UNANSWERED (The context provided does not contain information about who developed the theory of general relativity or the equation for mass–energy equivalence.),,0
+inferred,1,Which planet is known for its Great Red Spot and how many Galilean moons does it have?,Jupiter; 4,"UNANSWERED (The provided context does not contain information about any planet with the ""Great Red Spot"" or its number of Galilean moons.)",,0
+inferred,1,Name the process plants use to convert light to chemical energy and the cell organelle where it happens.,Photosynthesis; chloroplast,UNANSWERED (The provided context does not contain information about photosynthesis or the cell organelle involved in this process.),,0
+inferred,1,Which ocean is the largest by area and which continent is entirely in the Southern Hemisphere?,Pacific Ocean; Antarctica,UNANSWERED (The context does not provide information about oceans or continents.),,0
+inferred,1,Who painted the Mona Lisa and in which museum is it currently housed?,Leonardo da Vinci; Louvre,UNANSWERED,,0
+inferred,1,Who wrote Hamlet and what is the common term for his era of English?,William Shakespeare; Early Modern English,UNANSWERED (The context does not provide information about who wrote Hamlet or a common term for his era in English.),,0
+inferred,3,Which author wrote Pride and Prejudice and in which century did they live?,Jane Austen; 19th century,"UNANSWERED (There is no information about the author of ""Pride and Prejudice"" in the provided context.)",,0
+inferred,3,Name the capital of France and the river that runs through it.,Paris; Seine,SEINE_PARIS,,1
+inferred,3,Who developed the theory of general relativity and what is the equation for mass–energy equivalence?,Albert Einstein; E = mc^2,"UNANSWERED (Amedeo Avogadro is noted for contributions in molarity and molecular weight, not general relativity or mass–energy equivalence.)",,0
+inferred,3,Which planet is known for its Great Red Spot and how many Galilean moons does it have?,Jupiter; 4,UNANSWERED (The context doesn't provide information about planets with the Great Red Spot or the number of Galilean moons.),,0
+inferred,3,Name the process plants use to convert light to chemical energy and the cell organelle where it happens.,Photosynthesis; chloroplast,PHOTOSYNTHESIS AND CHLOROPLAST,,0
+inferred,3,Which ocean is the largest by area and which continent is entirely in the Southern Hemisphere?,Pacific Ocean; Antarctica,UNANSWERED (The provided context does not contain information about oceans or continents.),,0
+inferred,3,Who painted the Mona Lisa and in which museum is it currently housed?,Leonardo da Vinci; Louvre,UNANSWERED (The provided context does not contain information about who painted the Mona Lisa or where it is currently housed.),,0
+inferred,3,Who wrote Hamlet and what is the common term for his era of English?,William Shakespeare; Early Modern English,UNANSWERED (The provided context does not contain information about who wrote Hamlet or the common term for his era of English.),,0
+inferred,5,Which author wrote Pride and Prejudice and in which century did they live?,Jane Austen; 19th century,"UNANSWERED (The provided context does not contain the information about who wrote ""Pride and Prejudice"" or in which century.)",,0
+inferred,5,Name the capital of France and the river that runs through it.,Paris; Seine,SEINE-PARIS,,1
+inferred,5,Who developed the theory of general relativity and what is the equation for mass–energy equivalence?,Albert Einstein; E = mc^2,"Albert Einstein developed the theory of general relativity. The equation for mass-energy equivalence, also known as E=mc^2, was derived by him.",,0
+inferred,5,Which planet is known for its Great Red Spot and how many Galilean moons does it have?,Jupiter; 4,UNANSWERED (The provided context doesn't contain information about the Great Red Spot or Galilean moons.),,0
+inferred,5,Name the process plants use to convert light to chemical energy and the cell organelle where it happens.,Photosynthesis; chloroplast,PHOTOSYNTHESIS and CHLOROPLAST,,0
+inferred,5,Which ocean is the largest by area and which continent is entirely in the Southern Hemisphere?,Pacific Ocean; Antarctica,The Pacific Ocean is the largest by area. Antarctica is entirely in the Southern Hemisphere.,,0
+inferred,5,Who painted the Mona Lisa and in which museum is it currently housed?,Leonardo da Vinci; Louvre,UNANSWERED (The provided context does not contain information about the painter of the Mona Lisa or its current location.),,0
+inferred,5,Who wrote Hamlet and what is the common term for his era of English?,William Shakespeare; Early Modern English,UNANSWERED (There is no information about who wrote Hamlet or the common term for his era in the provided context.),,0
