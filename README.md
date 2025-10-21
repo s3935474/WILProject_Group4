@@ -32,7 +32,7 @@ On Windows: .\rag_env\Scripts\activate
 On macOS/Linux: source rag_env/bin/activate
 
 ### 4️⃣ Install dependencies 
-pip install -r requirements.txt 
+pip install -r updated_requirements.txt 
 
 ### 5️⃣ Run the webapp with:
 python app/app.py (assuming you are in the root directory)
@@ -46,6 +46,7 @@ default is http://127.0.0.1:5000
 3. langchain-experimental
 4. transformers
 5. faiss-cpu 
+6. datasets
 
 ### Additional Setup: Ollama (Local LLM Backend)
 
@@ -62,3 +63,6 @@ ollama --version
 Then, ollama serve
 
 Finally, ollama pull mistral (or any desired model)
+
+To check if ollama is actively serving, search in the browser:
+http://localhost:11434/api/tags

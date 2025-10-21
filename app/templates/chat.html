@@ -8,22 +8,35 @@
 </head>
 <body>
     <div class="container">
+
+        <!-- ✅ Top bar with Clear Chat button -->
         <div class="top-bar">
             <div class="logo">💬 SARAG <span>Study Assistant</span></div>
+            <form method="POST" action="{{ url_for('clear') }}">
+                <button type="submit" class="clear-btn" title="Clear chat">🗑 Clear</button>
+            </form>
         </div>
+        <!-- end top-bar -->
 
         <div class="main">
-            {% if query %}
-                <div class="chat-box">
-                    <div class="message user-message">
-                        <p><strong>You asked:</strong></p>
-                        <div class="bubble user-bubble">{{ query }}</div>
-                    </div>
+            {% if chat_history and chat_history|length > 0 %}
+                <div class="chat-box" id="chat-box">
+                    {% for msg in chat_history %}
+                        <div class="message user-message">
+                            <p><strong>You:</strong></p>
+                            <div class="bubble user-bubble">{{ msg.user }}</div>
+                        </div>
 
-                    <div class="message bot-message">
-                        <p><strong style="color: royalblue;">Response:</strong></p>
-                        <div class="bubble bot-bubble">{{ answer }}</div>
-                    </div>
+                        <div class="message bot-message">
+                            <p><strong style="color: royalblue;">SARAG:</strong></p>
+                            <div class="bubble bot-bubble">
+                                {{ msg.bot }}
+                                {% if msg.sources and msg.sources|length > 0 %}
+                                    <p class="sources">📚 Sources: {{ msg.sources | join(', ') }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             {% else %}
                 <h1 class="placeholder">What are you studying today?</h1>
@@ -37,5 +50,25 @@
             </button>
         </form>
     </div>
+
+    <!-- Auto-scroll script -->
+    <script>
+      // Smoothly scroll to bottom whenever a new message appears
+      const chatBox = document.getElementById('chat-box');
+      if (chatBox) {
+        const observer = new MutationObserver(() => {
+          chatBox.scrollTo({
+            top: chatBox.scrollHeight,
+            behavior: 'smooth'
+          });
+        });
+        observer.observe(chatBox, { childList: true, subtree: true });
+
+        // Initial scroll on load
+        window.addEventListener('load', () => {
+          chatBox.scrollTo({ top: chatBox.scrollHeight });
+        });
+      }
+    </script>
 </body>
 </html>

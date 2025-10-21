@@ -1,0 +1,6 @@
+flask
+langchain-community
+langchain-experimental
+transformers
+faiss-cpu
+datasets
