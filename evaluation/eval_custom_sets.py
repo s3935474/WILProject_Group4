@@ -20,9 +20,11 @@ TOPK_LIST = [1, 3, 5]
 
 OUT_OF_KB_PATH = "evaluation/question_sets/out_of_kb.jsonl"
 INFERRED_PATH  = "evaluation/question_sets/inferred_examples.jsonl"
+KNOWN_PATH      = "evaluation/question_sets/known_questions.jsonl"
 
 OUT_OF_KB_RESULTS = "evaluation/results_out_of_kb_unanswered.csv"
 INFERRED_RESULTS  = "evaluation/results_inferred_metrics.csv"
+KNOWN_RESULTS   = "evaluation/results_known_metrics.csv"
 DETAILS_LOG       = "evaluation/details_log.csv"
 
 SYSTEM_INSTRUCTION = (
@@ -207,10 +209,68 @@ def evaluate_inferred():
 
     return detail_rows
 
+# ----------- C) Known: NDCG, BERTScore, ROUGE-1 -----------
+def evaluate_known():
+    retriever, llm = setup_rag()
+    items = load_jsonl(KNOWN_PATH)
+
+    bert = load_metric("bertscore")
+    rouge = load_metric("rouge")
+
+    rows = []
+    detail_rows = []
+
+    for k in TOPK_LIST:
+        preds, refs = [], []
+        ndcgs = []
+
+        for obj in tqdm(items, desc=f"Known k={k}"):
+            q   = obj["question"]
+            ref = obj.get("reference_answer", "").strip()
+
+            try:
+                docs = retriever.get_relevant_documents(q, k=k)
+            except TypeError:
+                retriever.search_kwargs["k"] = k
+                docs = retriever.get_relevant_documents(q)
+
+            chunks = [d.page_content for d in docs] if docs else []
+            pred = llm_answer(llm, q, chunks)
+
+            rels = [relevance_binary(ref, c) for c in chunks]
+            ndcgs.append(ndcg_at_k(rels[:k]))
+
+            preds.append(pred)
+            refs.append(ref)
+
+            detail_rows.append({
+                "set":"known","k":k,"question":q,"answer":ref,"pred":pred,"rels":sum(rels)
+            })
+
+        bert_res  = bert.compute(predictions=preds, references=refs, lang="en")
+        rouge_res = rouge.compute(predictions=preds, references=refs)
+        rouge1    = rouge_res.get("rouge1", 0.0)
+
+        rows.append({
+            "k":k,
+            "NDCG@k_avg":f"{(sum(ndcgs)/max(1,len(ndcgs))):.4f}",
+            "BERTScore_F1_avg":f"{(sum(bert_res['f1'])/len(bert_res['f1'])):.4f}",
+            "ROUGE1":f"{rouge1:.4f}",
+            "num_questions":len(items)
+        })
+
+    os.makedirs(os.path.dirname(KNOWN_RESULTS), exist_ok=True)
+    with open(KNOWN_RESULTS,"w",newline="") as f:
+        w = csv.DictWriter(f, fieldnames=["k","NDCG@k_avg","BERTScore_F1_avg","ROUGE1","num_questions"])
+        w.writeheader(); w.writerows(rows)
+
+    return detail_rows
+
 if __name__ == "__main__":
     details = []
     details += evaluate_out_of_kb()
     details += evaluate_inferred()
+    details += evaluate_known()
 
     # Write per-question log for debugging / appendix
     with open(DETAILS_LOG,"w",newline="") as f:
@@ -221,4 +281,4 @@ if __name__ == "__main__":
             if "rels" not in r: r["rels"] = ""
             w.writerow(r)
 
-    print(f"\n✅ Saved:\n- {OUT_OF_KB_RESULTS}\n- {INFERRED_RESULTS}\n- {DETAILS_LOG}")
+    print(f"\n✅ Saved:\n- {OUT_OF_KB_RESULTS}\n- {INFERRED_RESULTS}\n- {KNOWN_RESULTS}\n- {DETAILS_LOG}")

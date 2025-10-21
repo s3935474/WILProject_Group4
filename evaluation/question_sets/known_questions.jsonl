@@ -1,0 +1,10 @@
+{"question": "What is polar bear's skin color?", "reference_answer": "white or cream", "source": "https://huggingface.co/datasets/rag-datasets/rag-mini-wikipedia/tree/main#entry-1281"}
+{"question": "Is Canada a member of the OECD?", "reference_answer": "Yes.", "source": "https://huggingface.co/datasets/rag-datasets/rag-mini-wikipedia/tree/main#entry-284"}
+{"question": "Did Abraham Lincoln live in the Frontier?", "reference_answer": "Yes", "source": "https://huggingface.co/datasets/rag-datasets/rag-mini-wikipedia/tree/main#entry-51"}
+{"question": "When was Lee Kuan Yew prime minister of Singapore?", "reference_answer": "1959", "source": "https://huggingface.co/datasets/rag-datasets/rag-mini-wikipedia/tree/main#entry-1458"}
+{"question": "What are the two subfamilies of the Native Ghanaian languages?", "reference_answer": "Kwa and Gur", "source": "https://huggingface.co/datasets/rag-datasets/rag-mini-wikipedia/tree/main#entry-619"}
+{"question": "What positions Ford played in the school football team?", "reference_answer": "Center and linebacker", "source": "https://huggingface.co/datasets/rag-datasets/rag-mini-wikipedia/tree/main#entry-567"}
+{"question": "Is the capital city Oslo?", "reference_answer": "no", "source": "https://huggingface.co/datasets/rag-datasets/rag-mini-wikipedia/tree/main#entry-501"}
+{"question": "Did Mainland Nova Scotia not come under British rule with the Treaty of Utrecht    (: ; ?", "reference_answer": "no!", "source": "https://huggingface.co/datasets/rag-datasets/rag-mini-wikipedia/tree/main#entry-336"}
+{"question": "What is the national language of Singapore?", "reference_answer": "The national language of Singapore is Malay.", "source": "https://huggingface.co/datasets/rag-datasets/rag-mini-wikipedia/tree/main#entry-1448"}
+{"question": "Was John Calvin Coolidge Jr. was born in Las Vegas?", "reference_answer": "No", "source": "https://huggingface.co/datasets/rag-datasets/rag-mini-wikipedia/tree/main#entry-239"}
