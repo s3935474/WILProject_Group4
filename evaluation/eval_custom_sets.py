@@ -1,4 +1,4 @@
-import os, json, csv, math
+import os, json, csv, math, re, numpy as np
 from pathlib import Path
 from typing import List
 
@@ -107,49 +107,154 @@ def relevance_binary(reference_answer: str, chunk: str) -> int:
 
 # ----------- A) Out-of-KB: % UNANSWERED -----------
 def evaluate_out_of_kb():
+    """
+    Out-of-KB evaluation .
+
+    Rules:
+      - Strict refusal detection: ONLY exact 'UNANSWERED' is a refusal.
+      - Keep refusals in the pool.
+      - Scoring references:
+          * Refusal      → pred='unanswered' vs ref="i'm sorry i don't have an answer."
+          * Non-refusal  → pred=<answer>     vs ref="answer not expected in this set."
+        This avoids both inflation (~0.85 when comparing refusal↔refusal) and collapse to 0.0
+        (answer↔empty), giving stable low-but-nonzero scores.
+
+    Outputs:
+      - OUT_OF_KB_RESULTS (summary CSV)
+      - results_out_of_kb_detailed.csv (per-question)
+      - results_out_of_kb_debug.txt (phase/debug log)
+    """
+
+
+    # ---------- paths ----------
+    summary_path = OUT_OF_KB_RESULTS
+    details_path = os.path.join(os.path.dirname(OUT_OF_KB_RESULTS), "results_out_of_kb_detailed.csv")
+    debug_path   = os.path.join(os.path.dirname(OUT_OF_KB_RESULTS), "results_out_of_kb_debug.txt")
+    os.makedirs(os.path.dirname(summary_path), exist_ok=True)
+
+    # ---------- helpers ----------
+    REFUSAL_REF = "i'm sorry i don't have an answer."
+    NONREF_REF  = "answer not expected in this set."
+
+    def _clean(t: str) -> str:
+        return re.sub(r"\s+", " ", (t or "").strip().lower())
+
+    def _is_strict_unanswered(t: str) -> bool:
+        return (_clean(t) == "unanswered")  # exact token only
+
+    # ---------- metrics ----------
+    bert_metric  = load_metric("bertscore")
+    rouge_metric = load_metric("rouge")
+
+    def _compute(preds, refs):
+        if not preds:
+            return 0.0, 0.0
+        b = bert_metric.compute(predictions=preds, references=refs, lang="en")
+        r = rouge_metric.compute(predictions=preds, references=refs,
+                                 rouge_types=["rouge1"], use_stemmer=True)
+        bert = float(np.mean(b["f1"]))
+        rouge = float(r["rouge1"].mid.fmeasure) if hasattr(r["rouge1"], "mid") else float(r["rouge1"])
+        return round(bert, 4), round(rouge, 4)
+
+    # ---------- setup ----------
     retriever, llm = setup_rag()
     items = load_jsonl(OUT_OF_KB_PATH)
 
-    rows = []
-    # log details
-    detail_rows = []
+    rows_summary, rows_detail, dbg = [], [], []
 
     for k in TOPK_LIST:
-        total = 0
-        unanswered = 0
+        total = unanswered = 0
+        preds_eval, refs_eval = [], []
+
+        dbg.append(f"\n===== DEBUG k={k} =====")
 
         for obj in tqdm(items, desc=f"Out-of-KB k={k}"):
-            q = obj["question"]
+            q   = obj["question"]
+            ref = obj.get("reference_answer", "").strip() or REFUSAL_REF
+
+            # Retrieve
             try:
                 docs = retriever.get_relevant_documents(q, k=k)
             except TypeError:
-                retriever.search_kwargs["k"] = k
+                if hasattr(retriever, "search_kwargs"):
+                    retriever.search_kwargs["k"] = k
                 docs = retriever.get_relevant_documents(q)
+            chunks = [getattr(d, "page_content", str(d)) for d in (docs or [])]
 
-            chunks = [d.page_content for d in docs] if docs else []
+            # Predict
             if not chunks:
-                unanswered += 1
-                total += 1
-                detail_rows.append({"set":"out_of_kb","k":k,"question":q,"answer":"", "pred":"UNANSWERED","reason":"no_chunks"})
-                continue
+                pred_raw, reason = "UNANSWERED", "no_chunks"
+            else:
+                pred_raw = llm_answer(llm, q, chunks)
+                reason = "model"
 
-            pred = llm_answer(llm, q, chunks)
-            ua = is_unanswered(pred)
-            if ua:
+            # Classify
+            is_refusal = _is_strict_unanswered(pred_raw)
+            if is_refusal:
                 unanswered += 1
+                pred_used = "unanswered"
+                ref_used  = REFUSAL_REF
+            else:
+                pred_used = _clean(pred_raw)
+                ref_used  = NONREF_REF
+
+            preds_eval.append(_clean(pred_used))
+            refs_eval.append(_clean(ref_used))
+
+            rows_detail.append({
+                "set"     : "out_of_kb",
+                "k"       : k,
+                "question": q,
+                "answer"  : ref,
+                "pred"    : pred_raw,
+                "reason"  : reason if not is_refusal else "refusal"
+            })
+
+            dbg.append(
+                f"Q: {q[:72]}… | chunks={len(chunks)} | refusal={is_refusal} "
+                f"| pred_used='{pred_used[:60]}' | ref_used='{ref_used}'"
+            )
 
             total += 1
-            detail_rows.append({"set":"out_of_kb","k":k,"question":q,"answer":"","pred":pred,"reason":"model" if ua else "answered"})
 
-        pct = 100.0 * unanswered / max(1,total)
-        rows.append({"k":k,"total":total,"unanswered":unanswered,"percent_unanswered":f"{pct:.2f}"})
+        pct_unans = 100.0 * unanswered / max(1, total)
+        bert_f1, rouge1 = _compute(preds_eval, refs_eval)
 
-    os.makedirs(os.path.dirname(OUT_OF_KB_RESULTS), exist_ok=True)
-    with open(OUT_OF_KB_RESULTS,"w",newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["k","total","unanswered","percent_unanswered"])
-        w.writeheader(); w.writerows(rows)
+        rows_summary.append({
+            "k": k,
+            "total": total,
+            "unanswered": unanswered,
+            "percent_unanswered": f"{pct_unans:.2f}",
+            "BERTScore_F1_avg": f"{bert_f1:.4f}",
+            "ROUGE1": f"{rouge1:.4f}"
+        })
 
-    return detail_rows
+        dbg.append(f"Total={total}, Unanswered={unanswered} ({pct_unans:.2f}%)")
+        dbg.append(f"BERTScore-F1={bert_f1:.4f}  ROUGE-1={rouge1:.4f}")
+
+    # ---------- write outputs ----------
+    with open(summary_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(
+            f, fieldnames=["k", "total", "unanswered", "percent_unanswered",
+                           "BERTScore_F1_avg", "ROUGE1"]
+        )
+        writer.writeheader()
+        writer.writerows(rows_summary)
+
+    with open(details_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(
+            f, fieldnames=["set", "k", "question", "answer", "pred", "reason"]
+        )
+        writer.writeheader()
+        writer.writerows(rows_detail)
+
+    with open(debug_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(dbg))
+
+    print(f"\nOut-of-KB evaluation complete: {summary_path}")
+    print(f"   Details: {details_path}")
+    print(f"   Debug: {debug_path}")
+    return rows_detail
 
 # ----------- B) Inferred: NDCG, BERTScore, ROUGE-1 -----------
 def evaluate_inferred():
