@@ -1,5 +1,5 @@
 # WIL Project Group 4 – Study Assistant RAG (SARAG)
-Authors: Mikael Ali, Diamond, Jimmy 
+Authors: Mikael Ali, Diamond, Jimmy, Andy & Joanne 
 
 Case Studies in Data Science – RMIT University  
 Semester 2, 2025
